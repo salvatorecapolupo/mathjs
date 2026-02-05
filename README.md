@@ -1,6 +1,6 @@
 # 🚀 MATHJS LAB: GUIDA AVANZATA (V2.0)
 
-Benvenuto nel laboratorio di livello 2. Oggi scopriremo un segreto: i computer a volte "sbagliano" i calcoli con la virgola. Impareremo come correggerli usando la matematica delle frazioni e come gestire i numeri infiniti.
+Oggi scopriremo un segreto: i computer a volte "sbagliano" i calcoli con la virgola. Impareremo come correggerli usando la matematica delle frazioni e come gestire i numeri infiniti.
 
 ---
 
