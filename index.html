@@ -3,102 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MathJS Student Console</title>
+    <title>MathJS Pro Lab</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.js"></script>
     <style>
         :root {
-            --bg-color: #1e1e1e;
-            --terminal-bg: #2d2d2d;
-            --text-color: #f0f0f0;
-            --accent-color: #00ff41; /* Hacker Green */
-            --error-color: #ff5555;
-            --input-bg: #383838;
+            --bg: #1e1e1e;
+            --term: #282c34;
+            --text: #abb2bf;
+            --green: #98c379;
+            --blue: #61afef;
+            --red: #e06c75;
+            --yellow: #e5c07b;
+            --purple: #c678dd;
         }
 
         body {
-            font-family: 'Courier New', Courier, monospace;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            font-family: 'Consolas', 'Monaco', monospace;
+            background-color: var(--bg);
+            color: var(--text);
             margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            padding: 20px;
-            box-sizing: border-box;
         }
 
-        .console-container {
-            width: 100%;
-            max-width: 800px;
+        .console-box {
+            width: 95%;
+            max-width: 900px;
             height: 90vh;
-            background-color: var(--terminal-bg);
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            background-color: var(--term);
+            border-radius: 8px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
             display: flex;
             flex-direction: column;
-            overflow: hidden;
-            border: 1px solid #444;
+            border: 1px solid #3e4451;
         }
 
         .header {
-            background-color: #111;
+            background: #21252b;
             padding: 10px 20px;
-            border-bottom: 1px solid #444;
+            border-bottom: 1px solid #3e4451;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-radius: 8px 8px 0 0;
         }
 
-        .header h1 {
-            font-size: 1.2rem;
-            margin: 0;
-            color: var(--accent-color);
+        .header h2 { margin: 0; color: var(--yellow); font-size: 1rem; letter-spacing: 1px; }
+        
+        button {
+            background: var(--blue);
+            color: #282c34;
+            border: none;
+            padding: 6px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
         }
+        button:hover { opacity: 0.9; }
 
-        .output-area {
+        .output {
             flex-grow: 1;
             padding: 20px;
             overflow-y: auto;
-            font-size: 1.1rem;
-            line-height: 1.5;
+            font-size: 1.15rem;
+            line-height: 1.6;
         }
 
-        .line {
-            margin-bottom: 10px;
-            border-bottom: 1px solid #3d3d3d;
-            padding-bottom: 5px;
-        }
+        .line { margin-bottom: 8px; word-wrap: break-word; }
+        .line.in { color: #888; margin-top: 15px; }
+        .line.in::before { content: "> "; color: var(--blue); }
+        
+        .line.out { color: var(--green); margin-left: 20px; font-weight: bold; }
+        .line.ratio-out { color: var(--purple); margin-left: 20px; font-style: italic; }
+        .line.err { color: var(--red); margin-left: 20px; background: rgba(224, 108, 117, 0.1); padding: 2px 5px; border-radius: 4px; }
+        .line.info { color: var(--yellow); margin-left: 20px; }
 
-        .line.user {
-            color: #aaa;
-        }
-
-        .line.result {
-            color: var(--accent-color);
-            font-weight: bold;
-        }
-
-        .line.error {
-            color: var(--error-color);
-        }
-
-        .input-area {
+        .input-group {
             display: flex;
             padding: 15px;
-            background-color: var(--input-bg);
-            border-top: 1px solid #444;
+            background: #21252b;
+            border-radius: 0 0 8px 8px;
+            border-top: 1px solid #3e4451;
         }
 
-        .prompt-char {
-            color: var(--accent-color);
-            margin-right: 10px;
-            font-weight: bold;
-            font-size: 1.2rem;
-            padding-top: 2px;
-        }
+        .prompt { color: var(--blue); margin-right: 10px; font-weight: bold; font-size: 1.2rem; padding-top: 2px;}
 
-        #command-input {
+        input {
             flex-grow: 1;
             background: transparent;
             border: none;
@@ -107,115 +100,140 @@
             font-size: 1.2rem;
             outline: none;
         }
-
-        button {
-            background-color: var(--accent-color);
-            color: #000;
-            border: none;
-            padding: 5px 15px;
-            cursor: pointer;
-            font-family: inherit;
-            font-weight: bold;
-            border-radius: 4px;
-            margin-left: 10px;
-        }
-
-        button:hover {
-            opacity: 0.8;
-        }
-
-        /* Scrollbar styling */
-        ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: var(--terminal-bg); }
-        ::-webkit-scrollbar-thumb { background: #555; border-radius: 5px; }
     </style>
 </head>
 <body>
 
-<div class="console-container">
+<div class="console-box">
     <div class="header">
-        <h1>> MathJS Lab</h1>
-        <button onclick="clearConsole()">Pulisci</button>
+        <h2>MATHJS PRO CONSOLE</h2>
+        <button onclick="clearLog()">RESET</button>
     </div>
-    
-    <div class="output-area" id="output">
-        <div class="line result">Benvenuto nella console di Math.js (<a target="_blank" href="https://mathjs.org/examples/index.html">link</a>)</div>
-        <div class="line user">Digita un comando e premi Invio. Prova "help".</div>
+    <div class="output" id="log">
+        <div class="line info">Console inizializzata.</div>
+        <div class="line info">Supporto frazioni periodiche attivo: 0.(3)</div>
+        <div class="line info">Prova 'printRatio(0.125)' per vedere la frazione.</div>
     </div>
-
-    <form class="input-area" onsubmit="runCommand(event)">
-        <span class="prompt-char">$</span>
-        <input type="text" id="command-input" autocomplete="off" placeholder="Scrivi qui la tua espressione..." autofocus>
-        <button type="submit">Esegui</button>
+    <form class="input-group" onsubmit="exec(event)">
+        <span class="prompt">$</span>
+        <input type="text" id="cmd" autocomplete="off" autofocus placeholder="Inserisci espressione...">
     </form>
 </div>
 
 <script>
-    const outputDiv = document.getElementById('output');
-    const inputField = document.getElementById('command-input');
+    const log = document.getElementById('log');
+    const input = document.getElementById('cmd');
 
-    // Configurazione parser mathjs
+    // 1. Configurazione MathJS
+    const config = {
+      epsilon: 1e-12,
+      matrix: 'Matrix',
+      number: 'number', // Default number type
+      precision: 64,
+      predictable: false,
+      randomSeed: null
+    }
+    
+    // Creiamo l'istanza
     const parser = math.parser();
 
-    function runCommand(e) {
-        e.preventDefault();
-        const command = inputField.value.trim();
-        
-        if (!command) return;
-
-        // Stampa il comando utente
-        printLine(`$ ${command}`, 'user');
-
-        if (command.toLowerCase() === 'help') {
-            printLine("Comandi base: 1.2 * (2 + 4.5)", 'result');
-            printLine("Frazioni: fraction(1, 3) + fraction(1, 6)", 'result');
-            printLine("Variabili: a = 5; b = 2; a * b", 'result');
-            printLine("Algebra: simplify('2x + x')", 'result');
-            inputField.value = '';
-            scrollToBottom();
-            return;
+    // 2. Definizione delle funzioni Helper personalizzate (come richiesto)
+    
+    // Funzione printRatio: forza output frazionario
+    function printRatioImpl(value) {
+        try {
+            // Se è un numero puro, proviamo a convertirlo in frazione
+            if (typeof value === 'number') {
+                value = math.fraction(value);
+            }
+            return math.format(value, { fraction: 'ratio' });
+        } catch (e) {
+            return value.toString();
         }
+    }
+
+    // Funzione print: forza output decimale (con notazione 0.(3) se necessario)
+    function printDecimalImpl(value) {
+        return math.format(value, { fraction: 'decimal' });
+    }
+
+    // Iniettiamo le funzioni nel parser così l'utente può digitarle
+    parser.set('printRatio', printRatioImpl);
+    parser.set('print', printDecimalImpl);
+
+
+    // 3. Motore di esecuzione
+    function exec(e) {
+        e.preventDefault();
+        const val = input.value.trim();
+        if (!val) return;
+
+        printLine(val, 'in');
 
         try {
-            // Valuta l'espressione
-            const result = parser.evaluate(command);
+            // Valutiamo l'espressione
+            const res = parser.evaluate(val);
             
-            // Formattazione del risultato
-            let formattedResult;
-            if (typeof result === 'object' && result !== null && result.toString) {
-                formattedResult = result.toString();
-            } else if (result === undefined) {
-                formattedResult = "Definito.";
-            } else {
-                formattedResult = math.format(result, {precision: 14});
+            // Gestione output intelligente
+            let outputText = "";
+            let type = 'out';
+
+            if (res === undefined) {
+                outputText = "Fatto.";
+            } 
+            else if (typeof res === 'function') {
+                outputText = "Funzione definita.";
+            }
+            else if (math.typeOf(res) === 'Fraction') {
+                // Se il risultato è una frazione, mostriamo entrambe le forme
+                const ratio = math.format(res, { fraction: 'ratio' });
+                const decimal = math.format(res, { fraction: 'decimal' });
+                
+                // Se l'utente ha chiamato esplicitamente printRatio, il risultato è già stringa
+                // Ma se il risultato è un oggetto Fraction puro:
+                outputText = `${decimal}  [Frazione: ${ratio}]`;
+            }
+            else {
+                // Output standard
+                // Se è una stringa (es. risultato di printRatio chiamato dall'utente)
+                if (typeof res === 'string') {
+                    outputText = res;
+                    type = 'ratio-out'; // Colore diverso per output forzati
+                } else {
+                    outputText = math.format(res, { precision: 14 });
+                }
             }
 
-            printLine(`= ${formattedResult}`, 'result');
-        } catch (err) {
-            printLine(`Errore: ${err.message}`, 'error');
-        }
+            printLine(outputText, type);
 
-        inputField.value = '';
+        } catch (err) {
+            printLine(err.message, 'err');
+        }
+        
+        input.value = '';
         scrollToBottom();
     }
 
-    function printLine(text, type) {
-        const div = document.createElement('div');
-        div.className = `line ${type}`;
-        div.textContent = text;
-        outputDiv.appendChild(div);
+    function printLine(txt, type) {
+        const d = document.createElement('div');
+        d.className = 'line ' + type;
+        d.textContent = txt;
+        log.appendChild(d);
+        scrollToBottom();
     }
 
     function scrollToBottom() {
-        outputDiv.scrollTop = outputDiv.scrollHeight;
+        log.scrollTop = log.scrollHeight;
     }
 
-    function clearConsole() {
-        outputDiv.innerHTML = '';
-        printLine('Console pulita.', 'result');
-        parser.clear(); // Pulisce anche le variabili in memoria
+    function clearLog() {
+        log.innerHTML = '';
+        parser.clear();
+        // Re-iniettiamo le funzioni custom dopo il clear
+        parser.set('printRatio', printRatioImpl);
+        parser.set('print', printDecimalImpl);
+        printLine("Memoria cancellata. Funzioni ricaricate.", 'info');
     }
 </script>
-
 </body>
 </html>
