@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MathJS Student Console</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.js"></script>
+    <style>
+        :root {
+            --bg-color: #1e1e1e;
+            --terminal-bg: #2d2d2d;
+            --text-color: #f0f0f0;
+            --accent-color: #00ff41; /* Hacker Green */
+            --error-color: #ff5555;
+            --input-bg: #383838;
+        }
+
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .console-container {
+            width: 100%;
+            max-width: 800px;
+            height: 90vh;
+            background-color: var(--terminal-bg);
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #444;
+        }
+
+        .header {
+            background-color: #111;
+            padding: 10px 20px;
+            border-bottom: 1px solid #444;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.2rem;
+            margin: 0;
+            color: var(--accent-color);
+        }
+
+        .output-area {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+
+        .line {
+            margin-bottom: 10px;
+            border-bottom: 1px solid #3d3d3d;
+            padding-bottom: 5px;
+        }
+
+        .line.user {
+            color: #aaa;
+        }
+
+        .line.result {
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        .line.error {
+            color: var(--error-color);
+        }
+
+        .input-area {
+            display: flex;
+            padding: 15px;
+            background-color: var(--input-bg);
+            border-top: 1px solid #444;
+        }
+
+        .prompt-char {
+            color: var(--accent-color);
+            margin-right: 10px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            padding-top: 2px;
+        }
+
+        #command-input {
+            flex-grow: 1;
+            background: transparent;
+            border: none;
+            color: white;
+            font-family: inherit;
+            font-size: 1.2rem;
+            outline: none;
+        }
+
+        button {
+            background-color: var(--accent-color);
+            color: #000;
+            border: none;
+            padding: 5px 15px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            border-radius: 4px;
+            margin-left: 10px;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: var(--terminal-bg); }
+        ::-webkit-scrollbar-thumb { background: #555; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="console-container">
+    <div class="header">
+        <h1>> MathJS Lab</h1>
+        <button onclick="clearConsole()">Pulisci</button>
+    </div>
+    
+    <div class="output-area" id="output">
+        <div class="line result">Benvenuto nella console di Math.js (<a target="_blank" href="https://mathjs.org/examples/index.html">link</a>)</div>
+        <div class="line user">Digita un comando e premi Invio. Prova "help".</div>
+    </div>
+
+    <form class="input-area" onsubmit="runCommand(event)">
+        <span class="prompt-char">$</span>
+        <input type="text" id="command-input" autocomplete="off" placeholder="Scrivi qui la tua espressione..." autofocus>
+        <button type="submit">Esegui</button>
+    </form>
+</div>
+
+<script>
+    const outputDiv = document.getElementById('output');
+    const inputField = document.getElementById('command-input');
+
+    // Configurazione parser mathjs
+    const parser = math.parser();
+
+    function runCommand(e) {
+        e.preventDefault();
+        const command = inputField.value.trim();
+        
+        if (!command) return;
+
+        // Stampa il comando utente
+        printLine(`$ ${command}`, 'user');
+
+        if (command.toLowerCase() === 'help') {
+            printLine("Comandi base: 1.2 * (2 + 4.5)", 'result');
+            printLine("Frazioni: fraction(1, 3) + fraction(1, 6)", 'result');
+            printLine("Variabili: a = 5; b = 2; a * b", 'result');
+            printLine("Algebra: simplify('2x + x')", 'result');
+            inputField.value = '';
+            scrollToBottom();
+            return;
+        }
+
+        try {
+            // Valuta l'espressione
+            const result = parser.evaluate(command);
+            
+            // Formattazione del risultato
+            let formattedResult;
+            if (typeof result === 'object' && result !== null && result.toString) {
+                formattedResult = result.toString();
+            } else if (result === undefined) {
+                formattedResult = "Definito.";
+            } else {
+                formattedResult = math.format(result, {precision: 14});
+            }
+
+            printLine(`= ${formattedResult}`, 'result');
+        } catch (err) {
+            printLine(`Errore: ${err.message}`, 'error');
+        }
+
+        inputField.value = '';
+        scrollToBottom();
+    }
+
+    function printLine(text, type) {
+        const div = document.createElement('div');
+        div.className = `line ${type}`;
+        div.textContent = text;
+        outputDiv.appendChild(div);
+    }
+
+    function scrollToBottom() {
+        outputDiv.scrollTop = outputDiv.scrollHeight;
+    }
+
+    function clearConsole() {
+        outputDiv.innerHTML = '';
+        printLine('Console pulita.', 'result');
+        parser.clear(); // Pulisce anche le variabili in memoria
+    }
+</script>
+
+</body>
+</html>
