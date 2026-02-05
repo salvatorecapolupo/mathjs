@@ -1,7 +1,3 @@
-Ecco la guida didattica completa, riscritta in formato testuale pulito e pronto per essere stampato o distribuito come dispensa (PDF/Markdown).
-
----
-
 # 🚀 MATHJS LAB: GUIDA AVANZATA (V2.0)
 
 Benvenuto nel laboratorio di livello 2. Oggi scopriremo un segreto: i computer a volte "sbagliano" i calcoli con la virgola. Impareremo come correggerli usando la matematica delle frazioni e come gestire i numeri infiniti.
