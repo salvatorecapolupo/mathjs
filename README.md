@@ -1,5 +1,4 @@
-🚀 MathJS Lab: Guida Avanzata
-Benvenuto nel laboratorio 2.0. Oggi scopriremo che i computer a volte "sbagliano" i calcoli e come usare le frazioni per correggerli.
+# 🚀 MathJS Lab: Guida 
 
 🟢 Modulo 1: Il "Bug" della Virgola
 Obiettivo: Scoprire perché i computer faticano con i numeri decimali.
